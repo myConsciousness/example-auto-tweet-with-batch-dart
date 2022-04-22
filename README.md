@@ -1,2 +1,2 @@
-# example-auto-tweet-with-batch-dart-
-This repository is an example implementation of a Twitter auto-tweet application using Batch.dart.
+A sample command-line application with an entrypoint in `bin/`, library code
+in `lib/`, and example unit test in `test/`.
