@@ -1,22 +1,26 @@
 import 'package:batch/batch.dart';
-import 'package:dart_twitter_api/twitter_api.dart';
+import 'package:twitter_api_v2/twitter_api_v2.dart';
 
 /// Run this application with command:
-/// `dart run bin/auto_tweeter_with_args.dart -k YOUR_CONSUMER_KEY -c YOUR_CONSUMER_SECRET -t YOUR_TOKEN -s YOUR_SECRET`
+/// `dart run bin/auto_tweeter_with_args.dart -b YOUR_BEARER_TOKEN -k YOUR_CONSUMER_KEY -c YOUR_CONSUMER_SECRET -t YOUR_TOKEN -s YOUR_SECRET`
 void main(List<String> args) => BatchApplication(
       args: args,
       argsConfigBuilder: (parser) => parser
+        ..addOption('apiBearerToken', abbr: 'b')
         ..addOption('apiConsumerKey', abbr: 'k')
         ..addOption('apiConsumerSecret', abbr: 'c')
         ..addOption('apiToken', abbr: 't')
         ..addOption('apiSecret', abbr: 's'),
       onLoadArgs: (args) {
         final twitter = TwitterApi(
-          client: TwitterClient(
+          bearerToken: args['apiBearerToken'],
+
+          // Or you can use OAuth 1.0a tokens.
+          oauthTokens: OAuthTokens(
             consumerKey: args['apiConsumerKey'],
             consumerSecret: args['apiConsumerSecret'],
-            token: args['apiToken'],
-            secret: args['apiSecret'],
+            accessToken: args['apiToken'],
+            accessTokenSecret: args['apiSecret'],
           ),
         );
 
@@ -49,7 +53,7 @@ class AutoTweetJobTask extends Task<AutoTweetJobTask> {
 
     try {
       // Auto tweet
-      await twitter.tweetService.update(status: 'Hello, world!');
+      await twitter.tweetsService.createTweet(text: 'Hello, world!');
     } catch (e, s) {
       log.error('Failed to tweet', e, s);
     }
